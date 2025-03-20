@@ -19,12 +19,12 @@ var user1 = {FName : "Dat", Location : "Somewhere in australia", Age : 20};
 var user2 = {FName : "Jermeiah Dy", Location : "Somewhere in france", Age : 21};
 
 
-function PrintInfo(msg, additionalInfo) {
+function PrintInfo(role, description) {
     //console.log(this) //the scope or the context of execution - global when function is not attached to any object
     //console.log(user1.FName)
     console.log(`
-        ${msg}
-        ${additionalInfo}
+        ${role}
+        ${description}
         ${this.FName}
         ${this.Location}
         ${this.Age}
