@@ -22,7 +22,7 @@ console.log(Sum()) // 0
 //the hoisted function
 function Sum() {       // upto here all are funtions
     console.log("no params accepted")
-    return 0
+    return 0 //As this the last defined Sum(), so all the Sum(x, y,....) goes here only.
 }
 console.log(Sum(5,5)) // 10
 
@@ -37,3 +37,24 @@ console.log(Sum(5,5,5,5)) // 20
 
 //create and example of overloading where you can attend 3 sessions on a day and 4 sessions on another
 //print name of the sessions
+
+//SOLUTION TO ABOVE PROBLEM
+
+function attendance(s1 , s2 , s3 , s4 ){
+    if(s1 && s2 && s3 && s4){
+        console.log("Attended 4 sessions")
+        return {s1 , s2 , s3 , s4}
+    } 
+    if(s1 && s2 && s3){
+        console.log("Attended 3 sessions")
+        return {s1 , s2 , s3}
+    }
+    else{
+        console.log("Attended neither 3 nor 4")
+        return 0
+    }
+}
+
+console.log(attendance("A", "B", "C"))
+console.log(attendance("W", "X", "Y", "Z"))
+console.log(attendance())

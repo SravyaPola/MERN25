@@ -34,3 +34,8 @@ console.log(`Animal sounds with ES6 short hand ${JSON.stringify(animalSoundES6)}
 
 //Task evaluate the out put and fix
 console.log("Animal sounds with vanilla javascript "+ animalSound)
+
+
+//module.exports - is used to export in core js
+
+module.exports = animalSoundES6;

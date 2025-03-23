@@ -13,7 +13,7 @@ var myFancyVariable = undefined
 console.log(myFancyVariable) //not an error but undefined
 
 console.log(Add)// not   defeined
-console.log(Add(4,4)) //undefined() //Add is not a function
+//console.log(Add(4,4)) //undefined() //Add is not a function
 
 console.log(Sum) // hoisted with its definition
 console.log(Sum(4,4)) // can be executed even before the declaration of the function

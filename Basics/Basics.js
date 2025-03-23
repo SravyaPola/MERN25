@@ -25,7 +25,8 @@ function incrementCounter() {
 
 // semicaolons are optional ;
 
-//dynamic typing - is present to assign any data type to the variable
+//dynamic typing - is present to assign any data type to the variable -- flexible in variable assignment
+
 
 //autocasting - it also allows to reassign and change the data type at the moment of re-assignment
 

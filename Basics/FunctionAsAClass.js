@@ -56,3 +56,39 @@ console.log(funcObj.getUserDetails())
 //console.log(funcObj.hobbies) //undefined
 
 //create a constructor function to print user details add one information using prototype
+
+//SOLUTION TO ABOVE PROBLEM
+
+var house = function(name, number, address){
+
+    this.name = name;
+    this.number = number;
+    this.address = address;
+
+    this.getHouseDetails = function(){
+        return {
+            Name: this.name,
+            Number: this.number,
+            Address: this.address
+        }
+    }
+}
+house.prototype.streetAdd = "Rio Robles"
+
+var tenant = new house("ABC apts", 123, "California")
+
+tenant.rent = 1200;
+tenant.noOfRooms = 3;
+
+tenant.getHouseDetails = function(){
+    return {
+        Name: this.name,
+        Number: this.number,
+        Address: this.address,
+        Street_Add: this.streetAdd,
+        Rent: this.rent,
+        No_Of_Rooms: this.noOfRooms
+    }
+}
+
+console.log(tenant.getHouseDetails())

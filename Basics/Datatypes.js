@@ -4,45 +4,45 @@
 //number, string, boolean, undefined, object
 //null as value 
 
-var myVar = 1000
-console.log("the value we have is - ", myVar)
+var autoCast = 1000
+console.log("the value we have is - ", autoCast)
 //typeof - is used to check the datatype
-console.log("the type we have is - ", typeof(myVar)) //type is - number
+console.log("the type we have is - ", typeof(autoCast)) //type is - number
 
-myVar = 10.009
-console.log("the value we have is - ", myVar)
+autoCast = 10.009
+console.log("the value we have is - ", autoCast)
 //typeof - is used to check the datatype
-console.log("the type we have is - ", typeof(myVar)) //type is - number
+console.log("the type we have is - ", typeof(autoCast)) //type is - number
 
 
-myVar = "Tejasvi"
+autoCast = "Tejasvi"
 
-console.log("the value we have is - ", myVar)
+console.log("the value we have is - ", autoCast)
 //typeof - is used to check the datatype
-console.log("the type we have is - ", typeof(myVar)) //type is - string
+console.log("the type we have is - ", typeof(autoCast)) //type is - string
 
-myVar = true
-console.log("the value we have is - ", myVar)
+autoCast = true
+console.log("the value we have is - ", autoCast)
 //typeof - is used to check the datatype
-console.log("the type we have is - ", typeof(myVar)) //type is - boolean
+console.log("the type we have is - ", typeof(autoCast)) //type is - boolean
 
 
-myVar = undefined // undefined - is a valid type as well as a default value to any literal
-console.log("the value we have is - ", myVar)
+autoCast = undefined // undefined - is a valid type as well as a default value to any literal
+console.log("the value we have is - ", autoCast)
 //typeof - is used to check the datatype
-console.log("the type we have is - ", typeof(myVar)) //type is - undefined
+console.log("the type we have is - ", typeof(autoCast)) //type is - undefined
 
-myVar = { name : "JeremiahDy" } //json, object
-console.log("the value we have is - ", myVar)
+autoCast = { name : "JeremiahDy" } //json, object
+console.log("the value we have is - ", autoCast)
 //typeof - is used to check the datatype
-console.log("the type we have is - ", typeof(myVar)) //type is - object
+console.log("the type we have is - ", typeof(autoCast)) //type is - object
 
 
 
-myVar = null // null - is also a valid data but its data type is object
-console.log("the value we have is - ", myVar)
+autoCast = null // null - is also a valid data but its data type is object
+console.log("the value we have is - ", autoCast)
 //typeof - is used to check the datatype
-console.log("the type we have is - ", typeof(myVar)) //type is - object
+console.log("the type we have is - ", typeof(autoCast)) //type is - object
 
 
 //symbol

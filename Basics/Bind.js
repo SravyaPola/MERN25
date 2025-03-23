@@ -63,4 +63,44 @@ User.printInfo() //we are not using bind to keep the context binded
 //use the same student object we had for call and apply and try adding them in setTimout of Student Obect with function
 // similar to above User.printInfo
 // we need to check after 2 second timeout how it returns the value
-// then fix the same by a copied variable and using bind and see the difference in light of scrope and bind (as above)
+// then fix the same by a copied variable and using bind and see the difference in light of scope and bind (as above)
+
+// SOLUTION 
+
+// Without USing Bind
+const Student = {
+    name: "Sravya",
+    age: 24,
+    getDetails: function() {
+        setTimeout(function() {
+            console.log(`Student: ${this.name}, Age: ${this.age}`);
+        }, 2000);
+    }
+};
+Student.getDetails(); //Student: undefined, Age: undefined
+
+
+//With Using Bind
+const Student1 = {
+    name: "Sravya",
+    age: 24,
+    getDetails: function() {
+        setTimeout(function() {
+            console.log(`Student: ${this.name}, Age: ${this.age}`);
+        }.bind(this), 2000);
+    }
+};
+Student1.getDetails(); //Student: Sravya, Age: 24
+
+// Using Arrow Function
+
+const Student2 = {
+    name: "Sravya",
+    age: 24,
+    getDetails: function() {
+        setTimeout(() => {
+            console.log(`Student: ${this.name}, Age: ${this.age}`);
+        }, 2000);
+    }
+};
+Student2.getDetails(); //Student: Sravya, Age: 24

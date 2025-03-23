@@ -38,3 +38,19 @@ console.log(closureData("sdajkj#$@",true))
 
 
 //create an example of your own to explain closure
+ 
+function Closure(){
+    var name = "Sravya";
+    var phoneNumber = "12345"
+
+    var getPhoneNumber = function(admin){
+        if(admin == name){
+            return phoneNumber;
+        }else{
+            return "You are not admin"
+        }
+    };
+    return getPhoneNumber;
+}
+var phno = Closure();
+console.log(phno("roopa"))

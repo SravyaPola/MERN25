@@ -21,7 +21,7 @@ setTimeout(function () {
 
 console.log("Execution Ends")  //last
 
-//compare settimeout 1000, 2000, 3000 with settimeout 3000 3000 3000
+//compare settimeout 1000, 2000, 3000 with settimeout 3000 3000 3000 in all three cases respectively
 
 
 

@@ -61,7 +61,7 @@ var basicInfo = ["US", "First", "2025", "6", "yes", "10 inches", "5", "4.5"]
 VehicalInfo.call(Car, "US", "First", "2025", "6")
 
 VehicalInfo.apply(Car, basicInfo)
-VehicalInfo.apply(Car, basicInfo)
+VehicalInfo.apply(Jeep, basicInfo)
 
 var ArithmeticData = {msg:"We are doing sum", data:"This is array list"}
 
@@ -83,3 +83,47 @@ Sum.apply(ArithmeticData, numList2)
 
 //Create two examples to set the context using student and list of subject attended by students, 
 //it should use call and apply do describe both the cases
+
+//SOLUTIONS TO ABOVE PROBLEMS ----
+
+//Case - 1 - Using Call
+
+// var student1 = {Name : "sravya", RollNo : "123", ClassNo : "1A"}
+// var student2 = {Name : "vijay", RollNo : "136", ClassNo : "1B"}
+
+// function StudentAttendingInfo(subject1, subject2, subject3){
+//     console.log(`
+//     ${this.Name}
+//     ${this.RollNo}
+//     ${this.ClassNo}
+//     ${subject1}
+//     ${subject2}
+//     ${subject3}`)
+// }
+
+// StudentInfo.call(student1, "Maths", "physics", "chemistry")
+// StudentInfo.call(student2, "History", "polity", "geography")
+
+
+//Case - 2 - Using Apply
+
+
+var student1 = {Name : "sravya", RollNo : "123", ClassNo : "1A"}
+var student2 = {Name : "vijay", RollNo : "136", ClassNo : "1B"}
+
+function StudentAttendingInfo(subject1, subject2, subject3){
+    console.log(`
+    ${this.Name}
+    ${this.RollNo}
+    ${this.ClassNo}
+    ${subject1}
+    ${subject2}
+    ${subject3}`)
+}
+
+var info1 = ["Maths", "physics", "chemistry"]
+var info2 = ["History", "polity", "geography"]
+
+StudentInfo.apply(student1, info1)
+StudentInfo.apply(student2, info2)
+

@@ -9,19 +9,21 @@
 //     const element = ProductList[index];
 //     element["productname"]
 // }
+// for...in -- Iterate over object keys
+// for...of -- Iterate over values of iterable objects
 
 //a. for in loop - iterates over the property value, basically meant for json objects with - key values
 
 //for in loop  
 let person = {fname:"John", lname:"Doe", age:25, address : {}, sesion: "MERNStack"}; 
 
-// for (const key in person) {
+for (const key in person) {
 
-//     //if (Object.prototype.hasOwnProperty.call(person, key)) {
-//         const element = person[key];
-//         console.log(element)
-//     //}
-// }
+    if (Object.prototype.hasOwnProperty.call(person, key)) {
+        const element = person[key];
+        console.log(element)
+    }
+ }
 
 //console.log("Other Example with array") 
 
@@ -75,3 +77,19 @@ for (const element of cars) {
 //Create an example of your own for -
 // 1. ForOF Loop
 // 2. ForIn loop
+
+//SOLUTIONS TO AOVE PROBLEM
+
+// For_of Loop -- prints values
+
+let fruits = ["apple", "banana", "orange"]
+
+for(const indexOfFruits of fruits){
+    console.log(indexOfFruits)
+}
+
+// For_in Loop -- prints index
+
+for(const indexOfFruits in fruits){
+    console.log(indexOfFruits)
+}

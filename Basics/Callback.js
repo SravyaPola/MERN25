@@ -25,3 +25,26 @@ Sum(5,6, PrintInfo)
 //2. PrintAccount details should accept this call back and the account information
 //3. Upon executing PrintAccntDetails it should show the account details with a message
 //4. Use the same call back to print multiple sessions planned for the day
+
+//SOLUTION TO ABOVE PROBLEM
+
+function printDetails(message, details){
+    console.log(`${message} , below are the details ${details}.`)
+}
+
+function PrintAccntDetails(AccDetails, callback){
+    const message = "Account Details"
+    callback(message, AccDetails)
+}
+function PrintSessions(SessDetails, callback){
+    const message = "Session Details"
+    callback(message, SessDetails)
+}
+
+const accDetails = ["Sravya", 123456, "Savings"]
+PrintAccntDetails(accDetails, printDetails)
+
+const sessDetails = ["Walk", "Meet", "Work"]
+PrintSessions(sessDetails, printDetails)
+
+

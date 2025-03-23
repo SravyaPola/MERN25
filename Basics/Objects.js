@@ -40,8 +40,9 @@ var Employee = {
 //             Employee ID is - ${this.EmpId} 
 //             Designation is - ${this.designation}`
 // }
-// console.log(Employee.getEmployeeDetails())
-// console.log(SoftwareEngineer.getEmployeeDetails())
+// console.log(Employee.getEmployeeDetails()) 
+// console.log(SoftwareEngineer.getEmployeeDetails())    
+
 
 
 //2. By using Object.create -
@@ -60,7 +61,8 @@ SoftwareEngineer.getEmployeeDetails = function () {
             Employee ID is - ${this.EmpId} 
             Designation is - ${this.designation}`
 }
-console.log(Employee.getEmployeeDetails())
+console.log(Employee.getEmployeeDetails())//main will not be changed 
+
 console.log(SoftwareEngineer.getEmployeeDetails())
 
 
@@ -110,7 +112,63 @@ console.log(deliveryData)
 // Create a Person <few properties and a function to return them> and Inherit it as Student class and override the function
 // Inherit should be done both way's constructor and Object.Create
 // Create three objects and merge their propeties
-// Create a logical example of closure
+// Create a logical example of closure -- look at closure.js
 // Share few data objects from one file to another
 
 // once done create a git repo and push this answer and send me your github link with access
+
+//SOLUTIONS TO ABOVE QUESTIONS
+
+
+var Person = {
+    FirstName : "Sravya",
+    LastName : "Pola",
+    Phone: "12345",
+    Address: "California",
+    getPersondetails : function(){
+        return `${this.FirstName} 
+        ${this.LastName}
+        ${this.Phone}
+        ${this.Address}`
+    }
+}
+
+//Using Constructor -- new Object()
+
+var student = new Object(Person)
+
+student.education = "Btech"
+student.job_role = "Software Developer"
+
+student.getPersondetails = function(){
+    return `${this.FirstName} - ${this.LastName} - ${this.education} - ${this.job_role}`
+}
+
+console.log(student.getPersondetails())// parent and child will be the same even when you make changes to child, 
+console.log(Person.getPersondetails())//main will be changed too
+
+//Using Object.create 
+
+var student = Object.create(Person)
+
+student.education = "Btech"
+student.job_role = "Software Developer"
+
+student.getPersondetails = function(){
+    return `${this.FirstName} - ${this.LastName} - ${this.education} - ${this.job_role}`
+}
+
+console.log(student.getPersondetails())//parent  will not change and child will change 
+console.log(Person.getPersondetails())// when you make changes to child, only child will chnaged, main is prevented to chnage
+
+
+//Merging properties
+
+var fruits = {name : "apple", count : 3, colour : "red"}
+var vegetables = {name : "Cabbage", price: 50, structure : "layered"}
+var dryfruits = {name : "almonds", howtoeat: "soak"}
+
+var groceries = {};
+groceries = Object.assign({}, fruits, vegetables, dryfruits) //the last source will replace common values
+
+console.log(groceries)
