@@ -84,8 +84,8 @@ for (const element of cars) {
 
 let fruits = ["apple", "banana", "orange"]
 
-for(const indexOfFruits of fruits){
-    console.log(indexOfFruits)
+for(const valuesOfFruits of fruits){
+    console.log(valuesOfFruits)
 }
 
 // For_in Loop -- prints index
