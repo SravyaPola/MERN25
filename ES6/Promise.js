@@ -66,9 +66,10 @@ let promiseObj = new Promise((resolve, reject)=>{
             code : 500,
             message : "Internal server error!!"
         })
-    }, 2500); //3 seconds wait to make it feel like making a call to server
+    }, 3000); //3 seconds wait to make it feel like making a call to server
 
 })
+// change settimeout time to observe the diffrences in resolve and reject
 
 // console.log(promiseObj)
 
@@ -82,6 +83,11 @@ promiseObj
 
 
 // console.log("at end ", promiseObj )
+
+//Always remember -- 
+// 1) Keeping resolve(3 seconds) before reject(4 seconds) ensures it has a chance to complete.
+// 2) Keeping reject(3 seconds) before resolve(4 seconds) ensures failure every time.
+// 3) Using the same time may lead to unpredictable results.(res(3s), rej(3s))
 
 
 // create a promise with name student login
