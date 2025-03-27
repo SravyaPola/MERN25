@@ -63,9 +63,6 @@ console.log("async Execution ends - outer");
 // also check when it rejects after 2 second
 // analyse how await works as blocking execution
 
-// create one set of map using different types of keys and at leas show the usage of 5 functions (.get, .clear)
-// create a list using set and show the usage of 5 functions (.add, .clear)
-
 //Answer to above question
 
 function userInfo(){
@@ -93,3 +90,39 @@ async function printUserInfo(){
 }
 
 printUserInfo()
+
+
+// create one set of map using different types of keys and at leas show the usage of 5 functions (.get, .clear)
+// create a list using set and show the usage of 5 functions (.add, .clear)
+
+//Answer to above question
+
+let myMap = new Map();
+myMap.set(1, "Integer Key");
+myMap.set("Key", "String Key");
+myMap.set(3.14, "Double Key");
+myMap.set(true, "Boolean Key");
+myMap.set('A', "Character Key");
+
+console.log("Value for key 1:", myMap.get(1)); 
+console.log("Map has key 'Key'?", myMap.has("Key")); 
+console.log("Size of Map:", myMap.size);
+myMap.delete(3.14); 
+console.log("Map after deleting key 3.14:", myMap);
+myMap.clear(); 
+console.log("Map after clear():", myMap);
+
+
+let mySet = new Set();
+mySet.add("Apple"); 
+mySet.add("Banana");
+mySet.add("Cherry");
+mySet.add("Apple"); //wont be added again
+
+console.log("Set elements:", mySet);
+console.log("Set has 'Banana'?", mySet.has("Banana")); 
+mySet.delete("Banana"); 
+console.log("Set after deleting 'Banana':", mySet);
+console.log("Size of Set:", mySet.size); 
+mySet.clear(); 
+console.log("Set after clear():", mySet);
