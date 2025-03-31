@@ -2,7 +2,8 @@
 // for as many times as we need
 // return - marks the end of execution
 // yield - is used to get the data on each function.next() call
-
+// a generator function is a special type of function that can be paused and resumed. 
+// //It is defined using the function* syntax and uses the yield keyword to return values one at a time.
 
 // function Add(p1, p2) {
 //     //n - times
