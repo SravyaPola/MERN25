@@ -39,3 +39,8 @@ console.log("Animal sounds with vanilla javascript "+ animalSound)
 //module.exports - is used to export in core js
 
 module.exports = animalSoundES6;
+
+globalThis.userInfo = {
+    Name : "Jeremiah Dy",
+    Session : "MERNStack"
+}

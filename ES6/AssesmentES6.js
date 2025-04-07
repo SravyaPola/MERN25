@@ -42,7 +42,6 @@ console.log(heroObjWithSir)
 
 //d.
 let heroInMarNotEvil = heroes.map(hero=> (hero.family == "Marvel"  && hero.isEvil == false) ? hero.name : "").filter(names=>names!="")
-
 console.log(heroInMarNotEvil)
 
 
