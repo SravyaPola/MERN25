@@ -4,6 +4,8 @@
   "description": "build restful aoi's using express over node",
   "main": "server.js",
   "scripts": {
+    "start1": "node server.js",
+    "start": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -18,6 +20,7 @@
   "author": "Sravya",
   "license": "MIT",
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "nodemon": "^3.1.9"
   }
 }
