@@ -1,0 +1,23 @@
+{
+  "name": "expressnodeapi",
+  "version": "1.0.0",
+  "description": "build restful aoi's using express over node",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Fast",
+    "unopinionated",
+    "minimalist",
+    "web",
+    "framework",
+    "for",
+    "nodejs"
+  ],
+  "author": "Sravya",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
