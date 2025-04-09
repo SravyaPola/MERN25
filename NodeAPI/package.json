@@ -1,7 +1,7 @@
 {
   "name": "expressnodeapi",
   "version": "1.0.0",
-  "description": "build restful aoi's using express over node",
+  "description": "build restful api's using express over node",
   "main": "server.js",
   "scripts": {
     "start1": "node server.js",
