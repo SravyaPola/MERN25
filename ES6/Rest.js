@@ -44,3 +44,5 @@
 // once installation of packages is done we don't share node_modules to repo but adding this to .gitignore and 
 // to install the already added packages in package.js we directly run below command
 // npm install     <this will install all the dependencies mentioned in package json>
+
+// 4 eseential things we get : methods, application, request, response, router
