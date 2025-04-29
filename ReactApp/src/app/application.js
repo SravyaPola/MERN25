@@ -6,6 +6,8 @@ import Header from "./CommonComponents/HeaderComponent";
 import Home from "./CommonComponents/HomeComponent";
 import NotFound from "./CommonComponents/NotFoundComponent";
 import About from "./CommonComponents/AboutComponent";
+import ComponentTypes from "./CommonComponents/ComponentTypes.js";
+
 
 export default class ApplicationComponent extends Component {
 
@@ -72,10 +74,11 @@ export default class ApplicationComponent extends Component {
                     <Header />
                         <Routes>
                             <Route path="/" element={<Home user={this.state.user} />}/>
-                            <Route path="home" element={<Home />}/>
+                            <Route path="home" element={<Home user={this.state.user} />}/>
+                            <Route path="comp" element={<ComponentTypes />}/>
                             <Route path="about" element={<About />}/>
-                            <Route path="about/:id" element={<About />}/>
-                            <Route path="about/:id/:name" element={<About />}/>
+                            {/* <Route path="about/:id" element={<About />}/> */}
+                            {/* <Route path="about/:id/:name" element={<About />}/> */}
                             <Route path="*" element={<NotFound />} />
                         </Routes>
                     <Footer sessionName={this.sessionName}/>
@@ -94,7 +97,13 @@ export default class ApplicationComponent extends Component {
 //use - useNavigate and useParams hooks to demonstrate the features
 
 
-
+//
+{/* <Route path="/" element={<Home user={this.state.user} />}/>
+<Route path="home" element={<Home />}/>
+<Route path="about" element={<About />}/>
+<Route path="about/:id" element={<About />}/>
+<Route path="about/:id/:name" element={<About />}/>
+<Route path="*" element={<NotFound />}  */}
 
 
 

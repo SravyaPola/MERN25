@@ -18,18 +18,19 @@ let Header = (props)=>{
             {usrName !=""?
             <h2>Hi {usrName} , Welcome to Shopping Cart sponsored by Tech Team SIT</h2>:
             <h2>Welcome to Shopping Cart sponsored by Tech Team SIT,
-                <h3>Please click on login button to proceed to login.</h3>
+                <div><h3>Please click on login button to proceed to login.</h3></div>
             </h2>
-            }   
+        }   
             <div>
                 <NavLink to="/home"  className="button" activeclassname="true"> Home </NavLink>
                 <NavLink to="/about"  className="button" activeclassname="true"> About </NavLink>
+                <NavLink to="/comp"  className="button" activeclassname="true"> Controlled/UnControlled </NavLink>
 
-                <NavLink to="/about/2025"  className="button" activeclassname="true"> About </NavLink>
+                {/* <NavLink to="/about/2025"  className="button" activeclassname="true"> About </NavLink> */}
                 {/* <NavLink to="/about/2025/dat"  className="button" activeclassname="true"> About </NavLink> */}
             </div>
 
-            <button onClick={navigateWithName} >About With Name</button>
+            {/* <button onClick={navigateWithName} >About With Name</button> */}
         </>
     )
 }
