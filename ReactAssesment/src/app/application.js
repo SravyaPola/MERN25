@@ -33,8 +33,7 @@ export default class Success extends Component {
             <h1>Success is not final; failure is not fatal: It is the courage to continue that counts.</h1>
             <h2>It is better to fail in originality than to succeed in imitation.</h2>
             <h3>The road to success and the road to failure are almost exactly the same.</h3>
-            <SuccessChild name = {this.state.name} address = {this.state.address}/>
-            <SuccessChild SuccessStory={<SuccessStory />} />
+            <SuccessChild name = {this.state.name} address = {this.state.address} SuccessStory={<SuccessStory />} />
             </div>
         )
     }
@@ -44,7 +43,8 @@ class SuccessStory extends Component{
     render(){
         return(
             <div>
-                <h4>This is SuccessStory</h4>
+                <h6>This is SuccessStory</h6>
+                <p>This is coming from Success class component</p>
             </div>
         )
     }

@@ -8,7 +8,7 @@ let SuccessChild = (props)=>{
     return(
         <div>
             <p>Name is {name} and Address is {address}</p>
-            <h6>{SuccessStory}</h6>
+            <p>{SuccessStory}</p>
         </div>
     );
 }
