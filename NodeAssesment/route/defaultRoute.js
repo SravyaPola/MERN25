@@ -24,7 +24,7 @@ const fs = require("fs");
 //2. Create an express setup, with a capability to expose end points for restful api
 //This the newly created node express setup
 
-//3. Create an API with name CreateUser as get verb and pass user info such as name, session, address and age as query param
+//3. Create an API with name CreateUser as get verb and pass user info such as name, session, address and age as query string / route param
 //4. Save the information passed in #3 to a json file name userInfo in local
 
 // Everything is done below

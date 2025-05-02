@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 let SuccessChild = (props)=>{
     let name = props.name; 
     let address = props.address;
