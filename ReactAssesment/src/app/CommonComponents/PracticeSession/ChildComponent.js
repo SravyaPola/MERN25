@@ -20,6 +20,9 @@ export default class ChildComponent extends PureComponent{
         });
         console.log('State of child is changed');
     }
+    componentWillUnmount() {
+        console.log('Child Component will unmount');
+    }
 
     render(){
         return (
