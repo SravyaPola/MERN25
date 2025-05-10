@@ -4,11 +4,12 @@ import React from "react"
 import ApplicationComponent from "./app/application"
 import * as ReactDOM from "react-dom/client"
 import LifecycleDemo from "./app/CommonComponent/LifeCycleDemo";
+import Login from "./app/CommonComponent/Login";
 
 //creating root of the react application where we can load the react app
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 //bootstrapping the react application
 root.render(
-    <LifecycleDemo/>
+    <Login />
 )
