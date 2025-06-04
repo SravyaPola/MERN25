@@ -13,12 +13,18 @@
 import { combineReducers } from "redux";
 import { configureStore } from '@reduxjs/toolkit';
 
-import useReducer from "./User/UserReducer";
+import userReducer from "./User/UserReducer";
+import productReducer from "./Product/ProductReducer";
+import studentReducer from "./Student/StudentReducer";
+import cartReducer from "./Cart/CartReducer";
 
 
 let rootReducer = combineReducers({
-    useReducer //useReducer : useReducer// all the list of reducers like product cart user gets combined here
-})
+    userReducer, //userReducer : userReducer
+    productReducer,
+    studentReducer,
+    cartReducer
+  })
 
 
 function logger({ getState }) {

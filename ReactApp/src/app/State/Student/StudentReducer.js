@@ -4,7 +4,7 @@
 import * as actionTypes from "../ActionTypes"
 
 let initialState = {
-    user : {
+    student : {
         userName : "",
         password : "",
         street : "",
@@ -16,12 +16,12 @@ let initialState = {
 //action - is an object which contains two things
 // type - the type of action is needed
 // payload - the data object to be updated once type is matched
-let userReducer = (state = initialState, action) => {
-    console.log("User Reduer ", action)
+let studentReducer = (state = initialState, action) => {
+    console.log("Student Reduer ", action)
 
     switch (action.type) {
-        case actionTypes.AddUserToStore:
-            return {...state, user: action.payload}// we will actually have multiple states like product state, cart state, user state -
+        case actionTypes.AddStudentToStore:
+            return {...state, student: action.payload}// we will actually have multiple states like product state, cart state, user state -
             //so now the previos state gets expandes and only the user state gets updated
     
         default:
@@ -30,4 +30,4 @@ let userReducer = (state = initialState, action) => {
 
 }
 
-export default userReducer;
+export default studentReducer;
