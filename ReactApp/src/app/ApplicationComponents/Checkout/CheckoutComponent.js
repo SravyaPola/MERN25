@@ -6,7 +6,7 @@ import Cart from "../Cart/CartComponent";
 
 let Checkout = ()=>{
     let user = useSelector((state)=>state.userReducer.user)
-    let coupon = "1545454"
+    const coupon = useSelector((state) => state.couponReducer.coupon);
 
     const [checkout, makePayment] = useState(true); //initialization of state through react hook useState passing in parameter
    

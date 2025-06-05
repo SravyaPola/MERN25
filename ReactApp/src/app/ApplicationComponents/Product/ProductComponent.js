@@ -3,88 +3,129 @@ import { useSelector, useDispatch } from "react-redux";
 import { saveProduct } from "../../State/Product/ProductAction";
 import DisplayProducts from "./DisplayProduct";
 
-let ProductComponent = (props) => {
+const ProductComponent = () => {
+  // 1) Grab the current user from Redux
+  const user = useSelector((state) => state.userReducer.user);
+  const isAdmin = user && user.userName === "admin";
 
-    let name = useRef(null)
-    let price = useRef(null)
-    let desc = useRef(null)
-    let rating = useRef(null)
+  // 2) Refs for the form fields
+  const nameRef = useRef(null);
+  const priceRef = useRef(null);
+  const descRef = useRef(null);
+  const ratingRef = useRef(null);
 
-    let product = useSelector((state)=>state.productReducer.Product) //product reducer
+  // 3) Grab the “current product” from Redux (e.g. for editing)
+  const product = useSelector((state) => state.productReducer.Product);
 
-    let dispatchProduct = useDispatch();
+  const dispatchProduct = useDispatch();
 
-    //useEffect - reads all the changes that affect the state of the component and then does the job of re-render
-    //if we pass the second parameter to initialize the state it will work as - componentDidMount
-    //if we dont pass the second parameter to initialize the state it will work as - shouldComponentUpdate
-    //if we return a child function then it will work as - componentWillUnMount
-    useEffect(()=>{
-        //initializing the values we read from reducer to our product state
-        name.current.value = product.name
-        price.current.value = product.price
-        desc.current.value = product.desc
-        rating.current.value = product.rating
+  // 4) Only initialize the inputs if the user is an admin and the refs exist
+  useEffect(() => {
+    // If not admin, skip all of this because the form never renders
+    if (!isAdmin) return;
 
-        //componentWillUnmount
-        // return ()=>{
-        //     console.log("This section works as component will unmount to clear all subscriptions")
-        // }
-    }, [])
-
-    let saveProductClick = (evt)=>{
-        //creating product data model to be saved in db using product api
-        let productToSave = {
-            name : name.current.value,
-            price : price.current.value,
-            desc : desc.current.value,
-            rating : rating.current.value
-        }
-
-        alert("We are going to save this product!!! "+ JSON.stringify(productToSave))
-
-        dispatchProduct(saveProduct(productToSave))
-        evt.preventDefault();
+    // Check that each ref is non-null before setting .value
+    if (nameRef.current) {
+      nameRef.current.value = product?.name || "";
     }
+    if (priceRef.current) {
+      priceRef.current.value = product?.price || "";
+    }
+    if (descRef.current) {
+      descRef.current.value = product?.desc || "";
+    }
+    if (ratingRef.current) {
+      ratingRef.current.value = product?.rating || "";
+    }
+    // We only want to run this when `product` or `isAdmin` changes
+  }, [product, isAdmin]);
 
-    return(
-        <div className="col-md-12">
-            <h1 className="col-md-12">Product component</h1>
+  // 5) Handler for saving the product (only admin can trigger)
+  const saveProductClick = (evt) => {
+    evt.preventDefault();
+    if (!isAdmin) return;
 
-            <form className={"form componentClass"}>
-                <div className="form col-md-8">
-                    <div className="col-md-12">
-                        <b>Product Name</b>
-                        <input type="text" className="form-control col-md-6 name" ref={name} maxLength={25} 
-                        placeholder="Product Name" />
-                    </div>
-                    <div className="col-md-12">
-                        <b>Price </b>
-                        <input type="number" className="form-control col-md-6" ref={price} 
-                        placeholder="Product Price" />
-                    </div>
-                    
-                    <div className="col-md-12">
-                        <b>Description </b>
-                    <input type="text" className="form-control col-md-6" ref={desc} 
-                        placeholder="Please Describe the product"  />
-                    </div>
-                    
-                    <div className="col-md-12">
-                        <b>Ratings </b>
-                    <input type="text" className="form-control col-md-6" ref={rating} 
-                        placeholder="Ratings" />
-                    </div>
+    const productToSave = {
+      name: nameRef.current.value,
+      price: priceRef.current.value,
+      desc: descRef.current.value,
+      rating: ratingRef.current.value,
+    };
 
-                    <input type="button" className={"form-control btn btn-primary col-md-3"} 
-                        value={"Save Product"} 
-                        onClick={saveProductClick}/>
-                </div>
-            </form>
-            <hr/>
-            <DisplayProducts />
+    alert("We are going to save this product: " + JSON.stringify(productToSave));
+    dispatchProduct(saveProduct(productToSave));
+
+    // Optionally clear fields afterward
+    nameRef.current.value = "";
+    priceRef.current.value = "";
+    descRef.current.value = "";
+    ratingRef.current.value = "";
+  };
+
+  return (
+    <div className="col-md-12">
+      <h1 className="col-md-12">Product Component</h1>
+
+      {isAdmin ? (
+        <form className="form componentClass">
+          <div className="form col-md-8">
+            <div className="col-md-12">
+              <b>Product Name</b>
+              <input
+                type="text"
+                className="form-control col-md-6 name"
+                ref={nameRef}
+                maxLength={25}
+                placeholder="Product Name"
+              />
+            </div>
+            <div className="col-md-12">
+              <b>Price </b>
+              <input
+                type="number"
+                className="form-control col-md-6"
+                ref={priceRef}
+                placeholder="Product Price"
+              />
+            </div>
+            <div className="col-md-12">
+              <b>Description </b>
+              <input
+                type="text"
+                className="form-control col-md-6"
+                ref={descRef}
+                placeholder="Please Describe the product"
+              />
+            </div>
+            <div className="col-md-12">
+              <b>Ratings </b>
+              <input
+                type="text"
+                className="form-control col-md-6"
+                ref={ratingRef}
+                placeholder="Ratings"
+              />
+            </div>
+            <input
+              type="button"
+              className="form-control btn btn-primary col-md-3"
+              value="Save Product"
+              onClick={saveProductClick}
+            />
+          </div>
+        </form>
+      ) : (
+        <div style={{ margin: "2rem 0", color: "#555" }}>
+          {user && user.userName
+            ? "Only ‘admin’ can add new products."
+            : "Please log in as ‘admin’ to add new products."}
         </div>
-    )
+      )}
 
-}
+      <hr />
+      <DisplayProducts />
+    </div>
+  );
+};
 
 export default ProductComponent;

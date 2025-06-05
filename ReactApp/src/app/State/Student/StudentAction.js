@@ -2,7 +2,7 @@
 // type - the type of action is needed
 // payload - the data object to be updated once type is matched
 
-import * as actionTypes from "../ActionTypes";
+import * as actionTypes from "../actionTypes";
 import axios from  "axios";
 
 export const AddStudentToStore = (student)=>{
