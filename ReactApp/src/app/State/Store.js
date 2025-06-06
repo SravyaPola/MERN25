@@ -18,14 +18,15 @@ import productReducer from "./Product/ProductReducer";
 import studentReducer from "./Student/StudentReducer";
 import cartReducer from "./Cart/CartReducer";
 import couponReducer from "./Coupon/CouponReducer";
-
+import recentOrderReducer from "./RecentOrder/RecentOrderReducer";
 
 let rootReducer = combineReducers({
     userReducer, //userReducer : userReducer
     productReducer,
     studentReducer,
     cartReducer,
-    couponReducer
+    couponReducer,
+    recentOrderReducer
   })
 
 
