@@ -19,6 +19,7 @@ import * as ReactDOM from "react-dom/client"
 import { Provider } from "react-redux";
 import store from "./app/State/Store";
 
+
 //creating root of the react application where we can load the react app
 const root = ReactDOM.createRoot(document.getElementById("root"));
 

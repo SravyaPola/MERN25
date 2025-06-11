@@ -1,6 +1,7 @@
 import * as actionTypes from "../actionTypes";
 import axios from "axios";
 
+
 export const saveCartForCheckout = (cart, userid)=>{
     console.log("cart List ", cart);
 
@@ -77,4 +78,68 @@ export const fetchUserCart = (userid)=>{
             console.log("Error While Saving Product", err)
         })
     }
+};
+
+
+export const mergeCart = (orderId) => {
+  return async (dispatch, getState) => {
+    const { userReducer: { user }, recentOrderReducer: orders } = getState();
+    const order = orders.find((o) => o._id === orderId);
+    if (!order) throw new Error("Order not found");
+
+    // build the “to-add” list
+    const items = order.order.map((i) => ({
+      productId: i._id.toString(),
+      qty:       i.qty,
+    }));
+
+    // fetch existing cart
+    const res = await axios.post("/cart/api/getusercart", { userid: user._id });
+    const existing = (res.data?.cart) || [];
+
+    // merge: sum quantities
+    const newCart = [...existing];
+    items.forEach((it) => {
+      const found = newCart.find((x) => x.productId === it.productId);
+      if (found) {
+        found.qty += it.qty;           // increment by reorder qty
+      } else {
+        newCart.push(it);               // brand-new item
+      }
+    });
+
+    // save merged cart
+    await axios.post("/cart/api/saveUserCart", { userid: user._id, cart: newCart });
+
+    // reload Redux cart slice
+    dispatch(EmptyTheCart());
+    const full = await axios.post("/cart/api/getUserCart", { userid: user._id });
+    for (const item of full.data.cart) {
+      dispatch(AddItemToCart(item));
+    }
+  };
+};
+
+export const replaceCart = (orderId) => {
+  return async (dispatch, getState) => {
+    const { userReducer: { user }, recentOrderReducer: orders } = getState();
+    const order = orders.find((o) => o._id === orderId);
+    if (!order) throw new Error("Order not found");
+
+    // build the “to-add” list
+    const items = order.order.map((i) => ({
+      productId: i._id.toString(),
+      qty:       i.qty,
+    }));
+
+    // save only this order’s items
+    await axios.post("/cart/api/saveUserCart", { userid: user._id, cart: items });
+
+    // reload Redux cart slice
+    dispatch(EmptyTheCart());
+    const full = await axios.post("/cart/api/getUserCart", { userid: user._id });
+    for (const item of full.data.cart) {
+      dispatch(AddItemToCart(item));
+    }
+  };
 };

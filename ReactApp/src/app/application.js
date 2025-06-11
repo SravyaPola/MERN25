@@ -17,6 +17,8 @@ import Checkout from "./ApplicationComponents/Checkout/CheckoutComponent.js";
 import Hooks from "./Hooks/UnderstandingHooks.js";
 import Coupon from "./ApplicationComponents/Coupon/CouponComponent.js";
 import RecentOrderComponent  from "./ApplicationComponents/RecentOrder/RecentOrderComponent";
+import ReviewComponent from "./ApplicationComponents/Review/ReviewComponent.js";
+import ReorderComponent from "./ApplicationComponents/Reorder/ReorderComponent.js";
 export default class ApplicationComponent extends Component {
 
     /**
@@ -93,7 +95,9 @@ export default class ApplicationComponent extends Component {
                             <Route path="hook" element={<Hooks />}/>
                             <Route path="coupon" element={<Coupon />}/>
                             <Route path="*" element={<NotFound />} />
-                            
+                            <Route path="/review" element={<ReviewComponent />} />
+                            <Route path="/reorder" element={<ReorderComponent />} />
+
                         </Routes>
                     <Footer sessionName={this.sessionName}/>
                 </div>    

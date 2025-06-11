@@ -21,13 +21,13 @@ let CartReducer = (state = Initial_State, action)=>{
                 }
                 return item;//for all other items in cart do not update anything
             })
-
+            
         case actionTypes.EMPTY_CART :
-            return []
-        
+            return [] 
         case actionTypes.REMOVE_ITEM :
             return state.filter((item)=>item._id != action.payload.productId)
-
+        case actionTypes.SET_CART_ITEMS:
+            return action.payload.items;
         default:
             return state
     }

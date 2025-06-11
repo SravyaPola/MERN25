@@ -16,6 +16,10 @@ const studentApp = express();
 const cartRoute = require("./route/cartRoute");   
 const cartApp   = express();
 
+const reviewRoute = require("./route/reviewRoute");
+const reviewApp   = express();
+ 
+
 const recentOrderRoute = require("./route/recentOrderRoute");
 const recentOrderApp = express();
 //calling the cors instance 
@@ -48,6 +52,11 @@ cartApp.use("/", cartRoute);
 
 app.use("/recentorders", recentOrderApp);
 recentOrderApp.use("/", recentOrderRoute);
+
+app.use("/reviews", reviewApp);
+reviewApp.use("/", reviewRoute);
+
+
 
 app.use("/", deafultApp) //=>  app.use("/student", studentApp) 
 deafultApp.use("/",defaultRoute) //redirecting all requests to default route to get served

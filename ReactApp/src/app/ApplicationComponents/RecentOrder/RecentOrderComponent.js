@@ -1,129 +1,117 @@
-// File: ReactApp/src/app/ApplicationComponents/RecentOrder/RecentOrderComponent.js
-
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { fetchRecentOrders, cancelRecentOrder } from "../../State/RecentOrder/RecentOrderAction";
-
-const isWithinTwoDays = (dateString) => {
-  const orderDate = new Date(dateString);
-  const now = new Date();
-  const diffMs = now - orderDate;
-  const twoDaysMs = 2 * 24 * 60 * 60 * 1000;
-  return diffMs <= twoDaysMs;
-};
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  fetchRecentOrders,
+  cancelRecentOrder,
+} from '../../State/RecentOrder/RecentOrderAction';
+import ReviewModal from '../Review/ReviewModal';
+import { Table, Button, Badge } from 'react-bootstrap';
 
 const RecentOrderComponent = () => {
   const dispatch = useDispatch();
+  const user     = useSelector(s => s.userReducer?.user);
+  const orders   = useSelector(s => s.recentOrderReducer ?? []);
+  const reviews  = useSelector(s => s.reviewReducer?.reviews ?? {});
 
-  const user = useSelector((state) => state.userReducer.user);
-  const orders = useSelector((state) => state.recentOrderReducer);
+  const [modal, setModal] = useState({
+    show: false,
+    context: '',      // 'order' or 'product'
+    orderId: null,
+    productId: null,
+  });
 
   useEffect(() => {
-    if (user && user._id) {
-      dispatch(fetchRecentOrders(user._id));
-    }
-  }, [dispatch, user]);
+    if (user?._id) dispatch(fetchRecentOrders(user._id));
+  }, [user, dispatch]);
 
-  if (!user || !user._id) {
-    return <h3>Please log in to see your recent orders.</h3>;
-  }
+  const openModal = (ctx, orderId, productId = null) =>
+    setModal({ show: true, context: ctx, orderId, productId });
+  const closeModal = () =>
+    setModal(mod => ({ ...mod, show: false }));
 
-  if (!orders || orders.length === 0) {
-    return <h3>You have no past orders.</h3>;
-  }
-
-  const handleCancel = (orderId) => {
-    if (!user || !user._id) {
-      alert("You must be logged in to cancel orders.");
-      return;
-    }
-    dispatch(cancelRecentOrder(orderId, user._id));
-  };
+  const canCancel = order =>
+    order.status === 'PLACED' &&
+    new Date() - new Date(order.dateTime) <= 2*24*60*60*1000;
 
   return (
-    <div className="recent-orders-container">
+    <div className="px-3">
       <h2>Your Recent Orders</h2>
+      {orders.map(order => (
+        <div key={order._id} className="mb-4">
+          <h4>Order #{order._id}</h4>
 
-      {orders.map((order) => {
-        const { _id, dateTime, status, order: items } = order;
-        const canCancel = status === "PLACED" && isWithinTwoDays(dateTime);
-
-        return (
-          <div
-            key={_id}
-            className="order-card"
-            style={{
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-              margin: "1rem 0",
-              padding: "1rem",
-            }}
-          >
-            <h3>Order ID: {_id}</h3>
-            <p>
-              <strong>Placed On: </strong>
-              {new Date(dateTime).toLocaleString()}
-            </p>
-            <p>
-              <strong>Status: </strong>
-              {status}
-            </p>
-
-            <table
-              style={{
-                width: "100%",
-                borderCollapse: "collapse",
-                marginTop: "0.5rem",
-              }}
-            >
-              <thead>
-                <tr>
-                  <th style={{ borderBottom: "1px solid #ddd", padding: "0.5rem" }}>
-                    Name
-                  </th>
-                  <th style={{ borderBottom: "1px solid #ddd", padding: "0.5rem" }}>
-                    Price
-                  </th>
-                  <th style={{ borderBottom: "1px solid #ddd", padding: "0.5rem" }}>
-                    Qty
-                  </th>
-                  <th style={{ borderBottom: "1px solid #ddd", padding: "0.5rem" }}>
-                    Total
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((item) => (
+          <Table striped bordered hover size="sm">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Your Review</th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              {order.order.map(item => {
+                const key = `product-${item._id}`;
+                const rev = reviews[key];
+                return (
                   <tr key={item._id}>
-                    <td style={{ padding: "0.5rem", borderBottom: "1px solid #eee" }}>
-                      {item.name}
-                    </td>
-                    <td style={{ padding: "0.5rem", borderBottom: "1px solid #eee" }}>
-                      ${item.price}
-                    </td>
-                    <td style={{ padding: "0.5rem", borderBottom: "1px solid #eee" }}>
-                      {item.qty}
-                    </td>
-                    <td style={{ padding: "0.5rem", borderBottom: "1px solid #eee" }}>
-                      ${(item.price * item.qty).toFixed(2)}
+                    <td>{item.name}</td>
+                    <td>{rev ? `⭐ ${rev.rating} — ${rev.comment}` : 'Not reviewed'}</td>
+                    <td className="text-center">
+                      <Button
+                        size="sm"
+                        variant={rev ? 'outline-secondary' : 'primary'}
+                        disabled={!!rev}
+                        onClick={() => openModal('product', order._id, item._id)}
+                      >
+                        {rev ? 'Reviewed' : 'Rate'}
+                      </Button>
                     </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                );
+              })}
+            </tbody>
+          </Table>
 
-            <div style={{ marginTop: "0.75rem" }}>
-              {canCancel ? (
-                <button onClick={() => handleCancel(_id)}>Cancel Order</button>
-              ) : status === "CANCELLED" ? (
-                <span style={{ color: "red" }}>Order Canceled</span>
+          <div className="d-flex align-items-center">
+            <Button
+              variant={reviews[`order-${order._id}`] ? 'outline-secondary' : 'primary'}
+              disabled={!!reviews[`order-${order._id}`]}
+              onClick={() => openModal('order', order._id)}
+            >
+              {reviews[`order-${order._id}`] ? 'Reviewed' : 'Rate Order'}
+            </Button>
+
+            {reviews[`order-${order._id}`] && (
+              <Badge bg="success" className="ms-2">Order Reviewed</Badge>
+            )}
+
+            <div className="ms-auto">
+              {canCancel(order) ? (
+                <Button
+                  size="sm"
+                  variant="outline-danger"
+                  onClick={() => dispatch(cancelRecentOrder(order._id))}
+                >
+                  Cancel
+                </Button>
               ) : (
-                <span>Cannot cancel (Delivered or expired)</span>
+                <Badge bg={order.status === 'CANCELLED' ? 'danger' : 'secondary'}>
+                  {order.status === 'CANCELLED' ? 'Canceled' : order.status}
+                </Badge>
               )}
             </div>
           </div>
-        );
-      })}
+        </div>
+      ))}
+
+      <ReviewModal
+        show={modal.show}
+        onHide={closeModal}
+        context={modal.context}
+        userId={user?._id}
+        orderId={modal.orderId}
+        productId={modal.productId}
+      />
     </div>
   );
 };
