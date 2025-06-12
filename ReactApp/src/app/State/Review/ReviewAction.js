@@ -64,3 +64,64 @@ export const submitOrderReview = (orderId, rating, comment) => {
     });
   };
 };
+
+export const fetchAllProductReviews = (userId) => async (dispatch) => {
+  // You’ll need to know which orderIds to query. We’ll fetch recent orders first:
+  const { data: { orders }} = await axios.get(
+    `http://localhost:9000/recentOrder/api/${userId}/orders`
+  );
+  // For each order and each product in it, fetch its review
+  for (const o of orders) {
+    for (const item of o.order) {
+      const { data: { review }} = await axios.get(
+        `http://localhost:9000/product/api/${item._id}/review`,
+        { params: { userId: userId, orderId: o._id } }
+      );
+      if (review) {
+        dispatch({
+          type: ActionTypes.FETCH_PRODUCT_REVIEW_SUCCESS,
+          payload: {
+            productId: item._id,
+            review,
+          },
+        });
+      }
+    }
+  }
+};
+
+// Fetch all order-level reviews for the current user
+export const fetchAllOrderReviews = (userId) => async (dispatch) => {
+  // Again, grab recent orders first
+  const { data: { orders }} = await axios.get(
+    `http://localhost:9000/recentOrder/api/${userId}/orders`
+  );
+  for (const o of orders) {
+    const { data: { review }} = await axios.get(
+      `http://localhost:9000/orders/api/${o._id}/review`,
+      { params: { userId: userId } }
+    );
+    if (review) {
+      dispatch({
+        type: ActionTypes.FETCH_ORDER_REVIEW_SUCCESS,
+        payload: {
+          orderId: o._id,
+          review,
+        },
+      });
+    }
+  }
+};
+
+export const fetchAllProductReviewsByProduct = (productId) => async (dispatch) => {
+  const res = await fetch(`http://localhost:9000/reviews/product/api/${productId}/allreviews`);
+
+  const data = await res.json();
+  const reviews = data.reviews || []; // ← fix here
+  dispatch({
+    type: "FETCH_ALL_PRODUCT_REVIEWS_SUCCESS",
+    payload: { productId, reviews: data.reviews || [] },
+  });
+};
+
+

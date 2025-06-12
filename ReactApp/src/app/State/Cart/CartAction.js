@@ -81,65 +81,74 @@ export const fetchUserCart = (userid)=>{
 };
 
 
-export const mergeCart = (orderId) => {
-  return async (dispatch, getState) => {
-    const { userReducer: { user }, recentOrderReducer: orders } = getState();
-    const order = orders.find((o) => o._id === orderId);
-    if (!order) throw new Error("Order not found");
+async function reloadCart(dispatch, userId) {
+  dispatch(EmptyTheCart());
+  const { data: { cart=[] } } = await axios.post(
+    "http://localhost:9000/cart/api/getUserCart",
+    { userid: userId }
+  );
+  cart.forEach(item => dispatch(AddItemToCart(item)));
+}
 
-    // build the “to-add” list
-    const items = order.order.map((i) => ({
-      productId: i._id.toString(),
-      qty:       i.qty,
-    }));
+export const mergeCart = (orderId) => async (dispatch, getState) => {
+  const {
+    userReducer: { user },
+    recentOrderReducer: orders,
+  } = getState();
+  const order = orders.find(o => o._id === orderId);
+  if (!order) throw new Error("Order not found");
 
-    // fetch existing cart
-    const res = await axios.post("/cart/api/getusercart", { userid: user._id });
-    const existing = (res.data?.cart) || [];
+  // Get the current cart in detail (should have _id, name, price, qty, etc)
+  const { data: { cart: existingCart = [] } } = await axios.post(
+    "http://localhost:9000/cart/api/getusercart",
+    { userid: user._id }
+  );
 
-    // merge: sum quantities
-    const newCart = [...existing];
-    items.forEach((it) => {
-      const found = newCart.find((x) => x.productId === it.productId);
-      if (found) {
-        found.qty += it.qty;           // increment by reorder qty
-      } else {
-        newCart.push(it);               // brand-new item
-      }
-    });
+  // Build a map by _id
+  const cartMap = {};
+  existingCart.forEach(item => {
+    cartMap[item._id] = { ...item };
+  });
 
-    // save merged cart
-    await axios.post("/cart/api/saveUserCart", { userid: user._id, cart: newCart });
-
-    // reload Redux cart slice
-    dispatch(EmptyTheCart());
-    const full = await axios.post("/cart/api/getUserCart", { userid: user._id });
-    for (const item of full.data.cart) {
-      dispatch(AddItemToCart(item));
+  // Merge order items by _id
+  order.order.forEach(orderItem => {
+    const id = orderItem._id;
+    if (cartMap[id]) {
+      cartMap[id].qty = Number(cartMap[id].qty) + Number(orderItem.qty);
+    } else {
+      cartMap[id] = { ...orderItem };
     }
-  };
+  });
+
+  // Save back to backend
+ const mergedCart = Object.values(cartMap).map(item => ({
+  ...item,
+  productId: item._id,
+}));
+  await axios.post(
+  "http://localhost:9000/cart/api/saveUserCart",
+  { userid: user._id, cart: mergedCart }
+);
+  await reloadCart(dispatch, user._id);
 };
 
-export const replaceCart = (orderId) => {
-  return async (dispatch, getState) => {
-    const { userReducer: { user }, recentOrderReducer: orders } = getState();
-    const order = orders.find((o) => o._id === orderId);
-    if (!order) throw new Error("Order not found");
 
-    // build the “to-add” list
-    const items = order.order.map((i) => ({
-      productId: i._id.toString(),
-      qty:       i.qty,
-    }));
+export const replaceCart = (orderId) => async (dispatch, getState) => {
+  const {
+    userReducer: { user },
+    recentOrderReducer: orders,
+  } = getState();
+  const order = orders.find(o => o._id === orderId);
+  if (!order) throw new Error("Order not found");
 
-    // save only this order’s items
-    await axios.post("/cart/api/saveUserCart", { userid: user._id, cart: items });
+  const newCart = order.order.map(i => ({
+    productId: i._id.toString(),
+    qty:       i.qty,
+  }));
 
-    // reload Redux cart slice
-    dispatch(EmptyTheCart());
-    const full = await axios.post("/cart/api/getUserCart", { userid: user._id });
-    for (const item of full.data.cart) {
-      dispatch(AddItemToCart(item));
-    }
-  };
+  await axios.post(
+    "http://localhost:9000/cart/api/saveUserCart",
+    { userid: user._id, cart: newCart }
+  );
+  await reloadCart(dispatch, user._id);
 };

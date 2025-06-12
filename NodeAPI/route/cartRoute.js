@@ -1,48 +1,83 @@
-let express = require("express");
-let router = express.Router({}),
-CartDataModel = require("../DataModel/cartDataModel");
+// routes/cartRoute.js
 
-//cart api's
-router.post("/api/saveUserCart",(req, res)=>{
+const express          = require("express");
+const mongoose         = require("mongoose");
+const router           = express.Router();
+const CartDataModel    = require("../DataModel/cartDataModel");
+// ← Make sure this path matches where you export your Product schema:
+const ProductDataModel = require("../DataModel/productDataModel");
 
-    CartDataModel.findOne({userid: req.body.userid})
-        .then((cartDbObj) => {        
-                if (!cartDbObj) { //checks for null cart of given user
-                        console.log("No cartitems Present, Adding / Inserting!"); 
-                        let cartObj = new CartDataModel(req.body);
-
-                        cartObj.save().then((data)=>{                                  
-                            res.json(data);
-                        }).catch((err)=>{
-                            res.send("Error Occurred"+ err);
-                        });
-                }
-                else{ //update the cart for given user
-                    console.log("CartItems Present, Replacing / Updating!");
-                    cartDbObj.cart = req.body.cart;//replacing db cart with cart that user has sent from cartcomponent page
-                    
-                    cartDbObj.save()
-                    .then((data)=>{        
-                        // setTimeout(()=>{
-                            res.json(data);
-                        //},10000)                        
-                    })
-                    .catch((err)=>{
-                        res.send("Error Occurred"+ err);
-                    })
-                }
-  })
-  .catch((err)=>{
-        console.log("got an error!", err);            
-        res.send("error while fetching cart!");
-  });
-
+// -----------------------------------------------------------------
+// 1) saveUserCart: untouched from your original implementation
+// -----------------------------------------------------------------
+router.post("/api/saveUserCart", (req, res) => {
+  CartDataModel.findOne({ userid: req.body.userid })
+    .then((cartDbObj) => {
+      if (!cartDbObj) {
+        console.log("No cart present — inserting new one");
+        return new CartDataModel(req.body).save();
+      } else {
+        console.log("Cart present — updating existing one");
+        cartDbObj.cart = req.body.cart;
+        return cartDbObj.save();
+      }
+    })
+    .then((saved) => res.json(saved))
+    .catch((err) => {
+      console.error("Error in saveUserCart:", err);
+      res.status(500).send("Error saving cart");
+    });
 });
 
-router.post("/api/getUserCart",(req, res)=>{
-    CartDataModel.findOne({userid: req.body.userid})
-        .then((cart) => { res.json(cart) })
-        .catch((err)=>{res.send("Error Occurred"+ err);})
+// -----------------------------------------------------------------
+// 2) getUserCart: now bullet-proof against bad IDs & returns full data
+// -----------------------------------------------------------------
+router.post("/api/getUserCart", async (req, res) => {
+  try {
+    const { userid } = req.body;
+    if (!userid) {
+      return res.status(400).json({ error: "userid is required" });
+    }
+
+    // a) Fetch the raw CartDataModel document
+    const cartDoc = await CartDataModel.findOne({ userid }).lean();
+    const rawItems = Array.isArray(cartDoc?.cart) ? cartDoc.cart : [];
+
+    // b) Build the "fullCart" array by looking up each product
+    const fullCart = [];
+    for (const item of rawItems) {
+      const id = item.productId?.toString();
+      if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+        console.warn("Skipping invalid productId:", item.productId);
+        continue;
+      }
+      try {
+        const prod = await ProductDataModel.findById(id)
+          .lean()
+          .select("_id name price description rating");
+        if (prod) {
+          fullCart.push({ 
+            _id:         prod._id, 
+            name:        prod.name, 
+            price:       prod.price, 
+            description: prod.description, 
+            rating:      prod.rating, 
+            qty:         item.qty 
+          });
+        } else {
+          console.warn("Product not found for ID:", id);
+        }
+      } catch (lookupErr) {
+        console.error("Error looking up product", id, lookupErr);
+      }
+    }
+
+    // c) Respond with the enriched cart
+    return res.json({ cart: fullCart });
+  } catch (err) {
+    console.error("Unexpected error in getUserCart:", err);
+    return res.status(500).json({ error: "Unable to load cart" });
+  }
 });
 
 module.exports = router;

@@ -43,6 +43,15 @@ let ReviewReducer = (state = Initial_State, action) => {
           [`order-${action.payload.orderId}`]: action.payload.review
         }
       };
+      case actionTypes.FETCH_ALL_PRODUCT_REVIEWS_SUCCESS:
+        return {
+          ...state,
+          allProductReviews: {
+            ...state.allProductReviews,
+            [action.payload.productId]: action.payload.reviews,
+          },
+        };
+
 
     default:
       return state;

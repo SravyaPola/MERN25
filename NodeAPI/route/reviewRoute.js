@@ -43,3 +43,14 @@ router.post("/orders/api/:orderId/review", async (req, res) => {
 });
 
 module.exports = router;
+
+router.get("/product/api/:productId/allreviews", async (req, res) => {
+  const { productId } = req.params;
+  const reviews = await ReviewModel.find(
+    { productId },
+    { userId: 1, rating: 1, comment: 1, dateTime: 1, _id: 0 }
+  ).lean();
+  return res.json({ reviews }); // Make SURE this is an array, never undefined
+});
+
+
