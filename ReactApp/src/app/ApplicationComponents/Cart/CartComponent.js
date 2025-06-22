@@ -6,13 +6,43 @@ import CartItemComponent from "./CartItemComponent";
 import CartSummary from "./CartSummary";
 import { saveCartForCheckout } from "../../State/Cart/CartAction";
 import { useNavigate } from "react-router-dom";
+import { addNotification }         from "../../State/Notification/NotificationAction";
 
 let CartComponent = (props)=>{
 
     let user = useSelector((state)=>state.userReducer.user)
     let cartList = useSelector((state)=>state.cartReducer)
 
-    let dispatchTheData = useDispatch();
+    const dispatch      = useDispatch();
+  const notifications = useSelector(s => s.notifications.items);
+  const hasStatic     = notifications.some(
+    n => n.message === "To Add Items from Cart Page"
+  );
+
+  // ── NEW: fire static on first mount
+ useEffect(() => {
+  if (!hasStatic) {
+    dispatch(addNotification(
+      "Tip: You can add or edit items in your cart here.",
+      "static"
+    ));
+  }
+}, [dispatch, hasStatic]);
+const prevCount = useRef(0);
+  // ── NEW: fire dynamic on cart‐length change
+useEffect(() => {
+  const curr = cartList.length;
+  // only dispatch if count changed and there is at least 1 item
+  if (curr !== prevCount.current && curr > 0) {
+    dispatch(
+      addNotification(
+        `You now have ${curr} item${curr !== 1 ? "s" : ""} in your cart.`,
+        "dynamic"
+      )
+    );
+  }
+  prevCount.current = curr;
+}, [cartList.length, dispatch]);
 
     console.log("cartList", cartList)
     console.log("user", user._id)
@@ -22,7 +52,7 @@ let CartComponent = (props)=>{
     let clickToSaveCart =(cartList, userid)=>{
         if (userid) {
             alert("cart will be saved");
-            dispatchTheData(saveCartForCheckout(cartList, userid))
+            dispatch(saveCartForCheckout(cartList, userid))
         } else {
             alert("You're not logged-in!! Please login to help you in furture with your selected products!!")
             //add a function using navigation hook to re-direct to login page

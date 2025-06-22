@@ -5,6 +5,7 @@ import { useDispatch, useSelector }   from "react-redux";
 import { fetchRecentOrders }           from "../../State/RecentOrder/RecentOrderAction";
 import { mergeCart, fetchUserCart }    from "../../State/Cart/CartAction";
 import { Tabs, Tab, Card, Button }     from "react-bootstrap";
+import { addNotification }             from "../../State/Notification/NotificationAction";
 
 const ReorderComponent = () => {
   const dispatch = useDispatch();
@@ -12,9 +13,36 @@ const ReorderComponent = () => {
   const orders   = useSelector((s) => s.recentOrderReducer) || [];
   const [openOrder, setOpenOrder] = useState(null);
 
+    // ── NEW: static dedupe
+  const notifications  = useSelector(s => s.notifications.items);
+  const hasStatic      = notifications.some(
+    n => n.message === "To Assist Them for cancel/reorder"
+  );
+
   useEffect(() => {
-    if (user?._id) dispatch(fetchRecentOrders(user._id));
-  }, [user, dispatch]);
+    if (user?._id) {
+      dispatch(fetchRecentOrders(user._id));
+      if (!hasStatic) {
+        dispatch(
+          addNotification(
+            "To Assist Them for cancel/reorder",
+            "static"
+          )
+        );
+      }
+    }
+  }, [dispatch, user, hasStatic]);
+
+  // ── NEW: dynamic for newly‐cancelled
+  useEffect(() => {
+    const cancelledOrders = orders.filter(o => o.status === "CANCELLED");
+    cancelledOrders.forEach(o => {
+      const msg = `Your order ${o._id} has been cancelled`;
+      if (!notifications.some(n => n.message === msg)) {
+        dispatch(addNotification(msg, "dynamic"));
+      }
+    });
+  }, [dispatch, orders, notifications]);
 
   if (!user?._id)    return <h3>Please log in to reorder.</h3>;
   if (!orders.length) return <h3>No orders available to reorder.</h3>;

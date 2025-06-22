@@ -13,6 +13,7 @@ import {
 } from "../../State/Cart/CartAction";
 import ReviewModal from "../Review/ReviewModal";
 import { Table, Button, Badge, Modal } from "react-bootstrap";
+import { addNotification } from "../../State/Notification/NotificationAction";
 
 export default function RecentOrderComponent() {
   const dispatch = useDispatch();
@@ -40,14 +41,27 @@ export default function RecentOrderComponent() {
   const openReorder = (orderId) => setReorderOpt({ show: true, orderId });
   const closeReorder = () => setReorderOpt({ show: false, orderId: null });
 
-  const handleReorder = async (mode) => {
-    const { orderId } = reorderOpt;
-    setDisabled((d) => ({ ...d, [orderId]: true }));
-    if (mode === "merge") await dispatch(mergeCart(orderId));
-    else await dispatch(replaceCart(orderId));
-    await dispatch(fetchUserCart(user._id));
-    closeReorder();
-  };
+const handleReorder = async (mode) => {
+  const { orderId } = reorderOpt;
+  setDisabled(d => ({ ...d, [orderId]: true }));
+
+  if (mode === 'merge') {
+    await dispatch(mergeCart(orderId));
+    dispatch(addNotification(
+      `Order ${orderId} merged into your cart`,
+      'dynamic'
+    ));
+  } else {
+    await dispatch(replaceCart(orderId));
+    dispatch(addNotification(
+      `Order ${orderId} replaced your cart`,
+      'dynamic'
+    ));
+  }
+
+  await dispatch(fetchUserCart(user._id));
+  closeReorder();
+};
 
   useEffect(() => {
     if (user?._id) {
@@ -141,7 +155,13 @@ export default function RecentOrderComponent() {
                     variant="outline-danger"
                     size="sm"
                     className="me-2"
-                    onClick={() => dispatch(cancelRecentOrder(o._id))}
+                    onClick={() => {
+                      dispatch(cancelRecentOrder(o._id));
+                      dispatch(addNotification(
+                        `Your order ${o._id} has been cancelled`,
+                        'dynamic'
+                      ));
+                    }}
                   >
                     Cancel
                   </Button>
@@ -168,14 +188,16 @@ export default function RecentOrderComponent() {
       })}
 
       {/* Review Modal */}
-      <ReviewModal
-        show={reviewModal.show}
-        onHide={closeReview}
-        context={reviewModal.context}
-        userId={user._id}
-        orderId={reviewModal.orderId}
-        productId={reviewModal.productId}
-      />
+      {user && (
+        <ReviewModal
+          show={reviewModal.show}
+          onHide={closeReview}
+          context={reviewModal.context}
+          userId={user._id}
+          orderId={reviewModal.orderId}
+          productId={reviewModal.productId}
+        />
+      )}
 
       {/* Reorder Options Modal */}
       <Modal show={reorderOpt.show} onHide={closeReorder} centered>

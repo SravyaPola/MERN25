@@ -59,3 +59,11 @@ export const SaveUserToDB = (user)=>{
         .catch((errrObj)=>console.log("Error occurred at sign-in sign-up", errrObj))
     }
 }
+export const loginUser = (user) => ({
+  type: actionTypes.LOGIN_USER,
+  payload: user
+});
+
+export const logoutUser = () => ({
+  type: actionTypes.LOGOUT_USER
+});

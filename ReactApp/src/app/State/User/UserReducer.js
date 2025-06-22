@@ -23,7 +23,11 @@ let userReducer = (state = initialState, action) => {
         case actionTypes.AddUserToStore:
             return {...state, user: action.payload}// we will actually have multiple states like product state, cart state, user state -
             //so now the previos state gets expandes and only the user state gets updated
-    
+        case actionTypes.LOGIN_USER:
+            return { ...state, user: action.payload };
+
+        case actionTypes.LOGOUT_USER:
+            return { ...state, user: null };
         default:
             return state
     }

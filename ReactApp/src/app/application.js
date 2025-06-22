@@ -77,6 +77,7 @@ export default class ApplicationComponent extends Component {
             <Router>                
                 <div className="topdiv">
                     <Header />
+                    <div className="app-content">
                         <Routes>
                             <Route path="/" element={<Home user={this.state.user} />}/>
                             <Route path="home" element={<Home user={this.state.user} />}/>
@@ -99,6 +100,7 @@ export default class ApplicationComponent extends Component {
                             <Route path="/reorder" element={<ReorderComponent />} />
 
                         </Routes>
+                        </div>
                     <Footer sessionName={this.sessionName}/>
                 </div>    
             </Router>      

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
+import { addNotification }           from "../../State/Notification/NotificationAction";
 import { addCoupon } from "../../State/Coupon/CouponAction";
 
 //functional component
@@ -12,14 +12,31 @@ let Coupon = (props) => {
     let coupon = useSelector((state) => state.couponReducer.coupon); //inside implements mapStateToProps for one state
     let user = useSelector((state) => state.userReducer.user); //inside implements mapStateToProps for one state
 
-    let dispatchCoupon = useDispatch(); // using this hook to dispatch the addCouponToStore action : publisher
-    
-    let addCouponClick = ()=>{
+    const dispatch      = useDispatch(); // ← define dispatch
 
-        let coupon = Math.ceil(Math.random()*100000); 
-        //alert("New Coupn Generated : "+ coupon);
-        dispatchCoupon(addCoupon(coupon));
-    }
+
+     // ── NEW: dedupe & fire static
+  const notifications  = useSelector(s => s.notifications.items);
+  const hasShownStatic = notifications.some(
+    n => n.message === "To Make Payment from Payment Page"
+  );
+     useEffect(() => {
+  if (!hasShownStatic) {
+    dispatch(addNotification(
+      "Tip: Generate a coupon before checkout.",
+      "static"
+    ));
+  }
+}, [dispatch, hasShownStatic]);
+
+   const addCouponClick = () => {
+  const code = Math.ceil(Math.random() * 100000);
+  dispatch(addCoupon(code));
+  dispatch(addNotification(
+    `New coupon generated: ${code}.`,
+    "dynamic"
+  ));
+};
 
     let navigate = useNavigate();
     let func = function(event) {      
@@ -27,6 +44,16 @@ let Coupon = (props) => {
         navigate('/checkout');
         event.preventDefault();
     }
+
+       // ── NEW (optional): notify when component mounts
+    useEffect(() => {
+      dispatch(
+        addNotification(
+          "To Make Payment from Payment Page",
+          "static"
+        )
+      );
+    }, [dispatch]);
 
     // let dateObj = new Date();
     // let [digitalClock, digitalClockUpDate] = useState(dateObj.toLocaleTimeString())

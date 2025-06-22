@@ -1,8 +1,8 @@
 // File: ReactApp/src/app/ApplicationComponents/Checkout/CheckoutComponent.js
-
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
+import { addNotification }                     from "../../State/Notification/NotificationAction";
 
 import Cart from "../Cart/CartComponent"; // one level up into Cart/
 import { saveRecentOrder } from "../../State/RecentOrder/RecentOrderAction"; // two levels up
@@ -20,8 +20,46 @@ const CheckoutComponent = () => {
   // Determine if cart has any items
   const hasItemsInCart = Array.isArray(cartList) && cartList.length > 0;
 
+   // ── NEW: notification hooks
+  const notifications     = useSelector(s => s.notifications.items);
+  const hasShownReview    = notifications.some(
+    n => n.message === "To Review Cart from Checkout Page"
+  );
+  const hasShownPayment   = notifications.some(
+    n => n.message === "To Make Payment from Payment Page"
+  );
+
   // 2) Local UI state: toggle between “Checkout” vs. “Payment” view
   const [checkout, setCheckout] = useState(true);
+
+  useEffect(() => {
+    if (checkout && !hasShownReview) {
+      dispatch(
+        addNotification(
+          "To Review Cart from Checkout Page",
+          "static"
+        )
+      );
+    }
+  }, [dispatch, checkout, hasShownReview]);
+
+  // ── NEW: fire static “Payment” when entering payment view
+  useEffect(() => {
+  if (checkout && !hasShownReview) {
+    dispatch(addNotification(
+      "Tip: Review your cart before proceeding to payment.",
+      "static"
+    ));
+  }
+}, [dispatch, checkout, hasShownReview]);
+useEffect(() => {
+  if (!checkout && !hasShownPayment) {
+    dispatch(addNotification(
+      "Tip: Complete your payment to finalize your order.",
+      "static"
+    ));
+  }
+}, [dispatch, checkout, hasShownPayment]);
 
   // 3) Go back to /cart
   const goBackToCart = (event) => {

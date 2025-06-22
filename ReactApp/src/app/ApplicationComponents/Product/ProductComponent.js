@@ -2,11 +2,18 @@ import React, { useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { saveProduct } from "../../State/Product/ProductAction";
 import DisplayProducts from "./DisplayProduct";
+import { addNotification }  from "../../State/Notification/NotificationAction";
 
 const ProductComponent = () => {
   // 1) Grab the current user from Redux
   const user = useSelector((state) => state.userReducer.user);
   const isAdmin = user && user.userName === "admin";
+
+   const dispatch       = useDispatch();
+  const notifications  = useSelector(s => s.notifications.items);
+  const hasShownStatic = notifications.some(
+    n => n.message === "To Add Products from Product Screen"
+  );
 
   // 2) Refs for the form fields
   const nameRef = useRef(null);
@@ -18,6 +25,17 @@ const ProductComponent = () => {
   const product = useSelector((state) => state.productReducer.Product);
 
   const dispatchProduct = useDispatch();
+
+// src/app/Product/ProductComponent.jsx
+useEffect(() => {
+  if (isAdmin && !hasShownStatic) {
+    dispatch(addNotification(
+      "Tip: Use this screen to add new products.",
+      "static"
+    ));
+  }
+}, [dispatch, isAdmin, hasShownStatic]);
+
 
   // 4) Only initialize the inputs if the user is an admin and the refs exist
   useEffect(() => {
